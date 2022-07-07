@@ -33,6 +33,12 @@ invasor_2 = pygame.image.load('img/invasor-2.png')
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption('Space Defender')
 
+
+## Funções do game 
+
+# Nave atirando
+
+
 # Loop principal onde roda o game 
 while True:
     
@@ -55,13 +61,26 @@ while True:
         if x > 0:
             x = x - 10
 
+    if pygame.key.get_pressed()[K_SPACE]:
+        print('a')
+
     
     nave_usuario = tela.blit(nave_u, (x, y))
 
-    limite_nave = pygame.draw.line(tela, (0, 0, 0), (0, 395), (640, 395), 1)
+    limite_nave = pygame.draw.line(tela, (13, 13, 9), (0, 395), (640, 395), 1)
+    
 
-    nave_inv1 = tela.blit(invasor_1, (x_invasor1, y_invasor1))
-    nave_inv2 = tela.blit(invasor_2, (x_invasor2, y_invasor2))
+
+    
+    # Nesse trecho, quando o invasor ultrapassa o limite da nave ele some
+    if y_invasor1 != 335:
+        y_invasor1 += 1
+        nave_inv1 = tela.blit(invasor_1, (x_invasor1, y_invasor1))
+
+    # Trecho que irá movimentar o tiro da nave 
+    
+        
+
 
     
     pygame.display.update()
