@@ -1,10 +1,11 @@
 import pygame
-
 from pygame.locals import *
-
 from sys import exit
+from random import randrange 
+import os
 
-from random import randint 
+diretorio_principal = os.path.dirname(__file__)
+diretorio_imagens = os.path.join(diretorio_principal, 'img')
 
 pygame.init()
 
@@ -12,38 +13,70 @@ pygame.init()
 largura = 640
 altura = 480
 
-# Coordenadas de acordo com as dimensões da tela 
-# Com a nave iniciando nesse local, ela irá aparecer no meio da tela 
-x = ( largura / 2 ) - 40
-y = 380
+# Coordenadas da nave 
+x_nave = ( largura / 2 ) - 40
+y_nave = 380
 
-# Posições em que as naves invasoras irão aparecer no game
-x_invasor1 = randint(0, 560)
-y_invasor1 = 1
+# Criando a fonte para poder gerar o texto na tela 
+fonte = pygame.font.SysFont('arial', 40, True, False)
 
-x_invasor2 = randint(0, 560)
-y_invasor2 = 1
+# Variável de controle de pontuação
+pontos = 100
+
 
 # Imagens do game 
 fundo = pygame.image.load('img/fundo.png')
 nave_u = pygame.image.load('img/nave_usuario.png')
-invasor_1 = pygame.image.load('img/invasor-1.png')
-invasor_2 = pygame.image.load('img/invasor-2.png')
+asteroide = pygame.image.load('img/asteroide.png')
 
 tela = pygame.display.set_mode((largura, altura))
-pygame.display.set_caption('Space Defender')
+pygame.display.set_caption('Space Runner')
 
 
-## Funções do game 
+# Criação do relógio para poder controlar o FPS do game 
+relogio = pygame.time.Clock()
 
-# Nave atirando
+# Classes do Jogo
+
+
+class Asteroides(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = asteroide
+        self.rect = self.image.get_rect()
+        self.rect.x = randrange(50, 600, 50)
+        self.rect.y = 100
+
+    def update(self):
+        if self.rect.y > altura:
+            self.rect.y = -80
+            self.rect.x = randrange(50, 600, 50)
+            
+
+        self.rect.y += 10
+
+
+todas_as_sprites = pygame.sprite.Group()
+
+for i in range(4):
+    obstaculo = Asteroides()
+    todas_as_sprites.add(obstaculo)
+
 
 
 # Loop principal onde roda o game 
 while True:
     
+    relogio.tick(30)
+
     tela.fill((0,0,0))
     tela.blit(fundo, (0, 0))
+
+    mensagem1 = f'Pontos: {pontos}'
+    texto_formatado1 = fonte.render(mensagem1, True, (225, 225, 225))
+
+    mensagem2 = f'FIM DE JOGO'
+    texto_formatado2 = fonte.render(mensagem2, True, (225, 225, 225))
     
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -51,36 +84,29 @@ while True:
             exit()
     
     
-    # Comandos para movimentar a nave pela tela 
-
-    if pygame.key.get_pressed()[K_RIGHT]:
-        if x < 560:
-            x = x + 10
-    
-    if pygame.key.get_pressed()[K_LEFT]:
-        if x > 0:
-            x = x - 10
-
-    if pygame.key.get_pressed()[K_SPACE]:
-        print('a')
-
-    
-    nave_usuario = tela.blit(nave_u, (x, y))
-
-    limite_nave = pygame.draw.line(tela, (13, 13, 9), (0, 395), (640, 395), 1)
+    todas_as_sprites.draw(tela)
     
 
-
+    nave = tela.blit(nave_u, (x_nave, y_nave))
+    bloco1 = pygame.draw.rect(tela, (0, 0, 0), (x_nave, y_nave + 10, 70, 1))
     
-    # Nesse trecho, quando o invasor ultrapassa o limite da nave ele some
-    if y_invasor1 != 335:
-        y_invasor1 += 1
-        nave_inv1 = tela.blit(invasor_1, (x_invasor1, y_invasor1))
 
-    # Trecho que irá movimentar o tiro da nave 
-    
+    if bloco1.colliderect(obstaculo):
+        tela.blit(texto_formatado2, (200, 220))
+    else:
+        # Comandos para movimentar a nave, caso ela não tenha colidido
+        if pygame.key.get_pressed()[K_RIGHT]:
+            if x_nave < 560:
+                x_nave = x_nave + 10
         
+        if pygame.key.get_pressed()[K_LEFT]:
+            if x_nave > 0:
+                x_nave = x_nave - 10
+        
+        todas_as_sprites.update()
+        pontos = pontos + 1
 
-
+    tela.blit(texto_formatado1, (400, 40))
     
-    pygame.display.update()
+    pygame.display.flip()
+ 
