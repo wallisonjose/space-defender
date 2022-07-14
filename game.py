@@ -89,7 +89,7 @@ while True:
     
 
     nave = tela.blit(nave_u, (x_nave, y_nave))
-    bloco1 = pygame.draw.rect(tela, (0, 0, 0), (x_nave, y_nave + 10, 70, 1))
+    bloco1 = pygame.draw.rect(tela, (0, 0, 0), (x_nave + 10, y_nave + 10, 50, 1))
     
 
     if bloco1.colliderect(obstaculo1) or bloco1.colliderect(obstaculo2) or bloco1.colliderect(obstaculo3) or bloco1.colliderect(obstaculo4):
@@ -107,7 +107,7 @@ while True:
         todas_as_sprites.update()
         pontos = pontos + 1
 
-    tela.blit(texto_formatado1, (400, 40))
+    tela.blit(texto_formatado1, (390, 30))
     
     pygame.display.flip()
  
