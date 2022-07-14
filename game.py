@@ -52,16 +52,17 @@ class Asteroides(pygame.sprite.Sprite):
             self.rect.y = -80
             self.rect.x = randrange(50, 600, 50)
             
-
         self.rect.y += 10
 
 
 todas_as_sprites = pygame.sprite.Group()
 
-for i in range(4):
-    obstaculo = Asteroides()
-    todas_as_sprites.add(obstaculo)
-
+#for i in range(4):
+obstaculo1 = Asteroides()
+obstaculo2 = Asteroides()
+obstaculo3 = Asteroides()
+obstaculo4 = Asteroides()
+todas_as_sprites.add(obstaculo1, obstaculo2, obstaculo3, obstaculo4)
 
 
 # Loop principal onde roda o game 
@@ -91,7 +92,7 @@ while True:
     bloco1 = pygame.draw.rect(tela, (0, 0, 0), (x_nave, y_nave + 10, 70, 1))
     
 
-    if bloco1.colliderect(obstaculo):
+    if bloco1.colliderect(obstaculo1) or bloco1.colliderect(obstaculo2) or bloco1.colliderect(obstaculo3) or bloco1.colliderect(obstaculo4):
         tela.blit(texto_formatado2, (200, 220))
     else:
         # Comandos para movimentar a nave, caso ela não tenha colidido
